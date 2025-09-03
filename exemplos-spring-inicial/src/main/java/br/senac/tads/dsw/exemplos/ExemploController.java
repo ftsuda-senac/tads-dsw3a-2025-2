@@ -9,13 +9,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @RestController
 public class ExemploController {
 
-    private final GeradorSaida gerador;
+    private ObjectMapper objectMapper;
 
-    public ExemploController(GeradorSaida gerador) {
-        this.gerador = gerador;
+    public ExemploController(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
     }
 
     @GetMapping
@@ -25,8 +27,13 @@ public class ExemploController {
             @RequestParam("email") String email,
             @RequestParam("time") String time) {
        
-        Dados dados = new Dados(nome, email, time, LocalDateTime.now());
-        return gerador.gerarSaida(dados);
+        Dados dados = new Dados(nome, email, time, "Ribeirao Preto",
+        LocalDateTime.now());
+        try {
+            return objectMapper.writeValueAsString(dados);
+        } catch (Exception ex) {
+            return  "{ }";
+        }
     }
 
 }

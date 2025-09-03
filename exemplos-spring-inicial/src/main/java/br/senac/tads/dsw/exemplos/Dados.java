@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 
 public record Dados(String nome, String email, String time,
+    String cidade,
     LocalDateTime dataHoraAtual) {
 
 }
