@@ -2,6 +2,9 @@ package br.senac.tads.dsw.exemplos;
 
 import java.time.format.DateTimeFormatter;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class GeradorSaidaJson implements GeradorSaida {
   
   @Override
