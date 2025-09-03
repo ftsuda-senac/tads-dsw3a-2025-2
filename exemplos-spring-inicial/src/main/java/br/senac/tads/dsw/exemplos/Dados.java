@@ -3,7 +3,8 @@ package br.senac.tads.dsw.exemplos;
 import java.time.LocalDateTime;
 
 
-public record Dados(String nome, String email, LocalDateTime dataHoraAtual) {
+public record Dados(String nome, String email, String time,
+    LocalDateTime dataHoraAtual) {
 
 }
 

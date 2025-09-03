@@ -7,20 +7,25 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 public class ExemploController {
 
-    @Autowired
-    private GeradorSaida gerador;
+    private final GeradorSaida gerador;
+
+    public ExemploController(GeradorSaida gerador) {
+        this.gerador = gerador;
+    }
 
     @GetMapping
-    @ResponseBody
+    // @ResponseBody
     public String gerarJson(
             @RequestParam("nome") String nome,
-            @RequestParam("email") String email) {
+            @RequestParam("email") String email,
+            @RequestParam("time") String time) {
        
-        Dados dados = new Dados(nome, email, LocalDateTime.now());
+        Dados dados = new Dados(nome, email, time, LocalDateTime.now());
         return gerador.gerarSaida(dados);
     }
 
