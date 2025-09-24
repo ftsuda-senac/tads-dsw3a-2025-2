@@ -26,12 +26,12 @@
         <h1>Dados pessoais</h1>
         <h2 id="tituloInclusao" class="d-none">Incluir nova pessoa</h2>
         <h2 id="tituloAlteracao" class="d-none">Alterar pessoa</h2>
-        <form method="post" id="formDados">
+        <form method="post" novalidate id="formDados">
           <div class="row mb-3">
             <label for="txtUsername" class="col-sm-2 col-form-label">Apelido</label>
             <div class="col-sm-10">
               <input type="text" name="username" value="" id="txtUsername" placeholder="Preencha um username válido e único"
-                class="form-control" maxlength="100" required />
+                class="form-control" maxlength="64" required />
               <p class="invalid-feedback"></p>
             </div>
           </div>
@@ -142,7 +142,7 @@
           const elId = `interesse${dado}`
           const opcao = `
             <div class="form-check form-check-inline">
-              <input type="checkbox" name="interessesIds" value="${dado}" id="${elId}" class="form-check-input" />
+              <input type="checkbox" name="interesses" value="${dado}" id="${elId}" class="form-check-input" />
               <label for="${elId}" class="form-check-label">${dado}</label>
             </div>
           `;
@@ -152,6 +152,45 @@
         alert(err);
       }
     })();
+
+    async function salvarDados(evt) {
+      evt.preventDefault(); // Evitar que o submit padrão do form seja disparado.
+      const elForm = evt.target; // OU document.getElementById('formDados')
+
+      const interessesSelecionados = document.querySelectorAll('[name="interesses"]:checked');
+      let interesses = [];
+      for (const opcao of interessesSelecionados) {
+        interesses.push(opcao.value);
+      }
+      const dados = {
+        username: elForm.username.value,
+        nome: elForm.nome.value,
+        email: elForm.email.value,
+        dataNascimento: elForm.dataNascimento.value,
+        telefone: elForm.telefone.value,
+        senha: elForm.senha.value,
+        repeticaoSenha: elForm.repeticaoSenha.value,
+        interesses: interesses
+      };
+      console.log(JSON.stringify(dados));
+      try {
+        const httpResp = await fetch('http://localhost:8080/pessoas', {
+          method: 'post',
+          headers: {
+            'content-type': 'application/json'
+          },
+          body: JSON.stringify(dados)
+        });
+        if (!httpResp.ok) {
+          alert('ERRO no envio')
+          return;
+        }
+        alert('Dados incluidos com sucesso');
+      } catch (err) {
+        alert('ERRO no envio')
+      }
+    }
+    document.getElementById('formDados').onsubmit = salvarDados;
 
   </script>
 </body>
