@@ -5,10 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,8 +22,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/pessoas")
+@CrossOrigin(origins = "*")
 public class PessoaRestController {
 
     @Autowired
@@ -69,7 +72,7 @@ public class PessoaRestController {
     }
 
     @PostMapping
-    public ResponseEntity<?> addNew(@RequestBody Pessoa pessoa) {
+    public ResponseEntity<?> addNew(@RequestBody @Valid Pessoa pessoa) {
         Pessoa p = service.addNew(pessoa);
         URI location = ServletUriComponentsBuilder
             .fromCurrentRequestUri()
@@ -82,7 +85,7 @@ public class PessoaRestController {
     @PutMapping("/{username}")
     public ResponseEntity<?> update(
             @PathVariable String username,
-            @RequestBody Pessoa pessoa) {
+            @RequestBody @Valid Pessoa pessoa) {
         
         Pessoa p = service.findByUsername(username);
         if (p == null) {
