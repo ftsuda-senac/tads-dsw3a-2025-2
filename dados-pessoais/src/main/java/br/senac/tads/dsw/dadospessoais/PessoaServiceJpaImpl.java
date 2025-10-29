@@ -1,14 +1,17 @@
 package br.senac.tads.dsw.dadospessoais;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.senac.tads.dsw.dadospessoais.persistence.entities.InteresseEntity;
 import br.senac.tads.dsw.dadospessoais.persistence.entities.PessoaEntity;
+import br.senac.tads.dsw.dadospessoais.persistence.repository.InteresseRepository;
 import br.senac.tads.dsw.dadospessoais.persistence.repository.PessoaRepository;
 
 @Service
@@ -16,6 +19,9 @@ public class PessoaServiceJpaImpl implements PessoaService {
 
     @Autowired
     private PessoaRepository pessoaRepository;
+
+    @Autowired
+    private InteresseRepository interesseRepository;
 
     private Pessoa toDto(PessoaEntity entity) {
         Pessoa dto = new Pessoa();
@@ -66,8 +72,16 @@ public class PessoaServiceJpaImpl implements PessoaService {
         entity.setEmail(dto.getEmail());
         entity.setTelefone(dto.getTelefone());
         entity.setSenha(dto.getSenha());
-        // TODO: setar interesses
 
+        Set<InteresseEntity> interesses = new HashSet<>();
+        for (String interesseNome : dto.getInteresses()) {
+            Optional<InteresseEntity> optInteresse = interesseRepository.findByNomeIgnoreCase(interesseNome);
+            if (optInteresse.isPresent()) {
+                interesses.add(optInteresse.get());
+            }
+        }
+        entity.setInteresses(interesses);
+        
         pessoaRepository.save(entity);
         return dto;
     }

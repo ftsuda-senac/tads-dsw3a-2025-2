@@ -2,8 +2,6 @@ package br.senac.tads.dsw.dadospessoais.persistence.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
@@ -12,7 +10,6 @@ import jakarta.persistence.Table;
 public class InteresseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(unique = true, nullable = false, length = 100)
@@ -20,6 +17,14 @@ public class InteresseEntity {
 
     // @ManyToMany(mappedBy = "interesses")
     // private Set<PessoaEntity> pessoas;
+
+    public InteresseEntity() {
+    }
+
+    public InteresseEntity(Integer id, String nome) {
+        this.id = id;
+        this.nome = nome;
+    }
 
     public Integer getId() {
         return id;
