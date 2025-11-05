@@ -3,22 +3,28 @@ package br.senac.tads.dsw.dadospessoais.security;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-// @EnableMethodSecurity // <=== Habilita uso do @PreAuthorize e @PostAutorize
+@EnableMethodSecurity // <=== Habilita uso do @PreAuthorize e @PostAutorize
 public class SecurityConfig {
+
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthFilter;
 
     // Delegating Password Encoder – suporte a múltiplos algoritmos de hash
     @Bean
@@ -56,8 +62,11 @@ public class SecurityConfig {
                                 "/h2-console/**",
                                 "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**")
                         .permitAll()
-                        .requestMatchers("/admin").hasAuthority("SCOPE_ADMIN")
+                        // .requestMatchers("/peao").hasAuthority("PEAO")
+                        // .requestMatchers("/gerente").hasAuthority("GERENTE")
+                        // .requestMatchers("/diretor").hasAuthority("DIRETOR")
                         .anyRequest().authenticated())
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 }
